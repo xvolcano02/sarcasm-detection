@@ -34,11 +34,10 @@ valid_dir = '/data/jingliqiang/xiecan/MILNet/data/clean_data/valid.txt'
 test_dir = '/data/jingliqiang/xiecan/MILNet/data/clean_data/test.txt'
 
 
-aug_text_dir="/data/jingliqiang/xiecan/MILNet/data/clean_data/back_translate_text_tx.txt"
+
 oppoite_dir=""
 def get_text():
     all_text = {}
-    aug_text={}
     all_label = {}
     with open(valid_dir) as f:
         for line in f.readlines():
@@ -70,14 +69,7 @@ def get_text():
             if sp[0][2:-2] not in all_text.keys():
                 all_text[sp[0][2:-2]] = " ".join(sp_1)
                 all_label[sp[0][2:-2]] = sp_label
-    with open(aug_text_dir) as f:
-        for line in f.readlines():
-            line=line.split('\n')[0]
-            id=line.split('[')[1].split(',')[0].split("'")[1]
-            seq=line.split('[')[1].split(',')[1]
-            if id not in aug_text.keys():
-                aug_text[id]=seq
-    return all_text, all_label,aug_text
+    return all_text, all_label
 
 def get_opposite():
     with open("/data/jingliqiang/xiecan/MILNet/data/train_id_2.pkl","rb") as f:
@@ -99,7 +91,7 @@ class RGDataset(Dataset):
         with open(id_path, "rb") as f:
             self.id = pickle.load(f)
             self.image_path = image_path
-            self.all_text_dic, self.all_label_dic,self.aug_text = get_text()
+            self.all_text_dic, self.all_label_dic = get_text()
             self.image_text_dic = get_image_text()
             # self.faster_dic = get_faster_rcnn()
             self.max_len = max_len
@@ -176,7 +168,7 @@ class RG2Dataset(Dataset):
         with open(id_path, "rb") as f:
             self.id = pickle.load(f)
             self.image_path = image_path
-            self.all_text_dic, self.all_label_dic,_ = get_text()
+            self.all_text_dic, self.all_label_dic = get_text()
             self.image_text_dic = get_image_text()
             self.oppoite_id,self.oppoite_text_dic,self.opposite_label_dic=get_opposite()
             self.ood_text_dic,self.ood_label_dic=get_ood()
@@ -262,8 +254,5 @@ class RG2Dataset(Dataset):
     
       
 if __name__ == '__main__':
-    from torch.utils.data import DataLoader
-    train_dataset=AugDataset(os.path.join("/data/jingliqiang/xiecan/MILNet2/data/",'train_id.pkl'),"/data/jingliqiang/xiecan/data/sarcasm-detection/dataset_image",77)
-    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True,
-                                    num_workers=8, pin_memory=True)
+    pass
 
