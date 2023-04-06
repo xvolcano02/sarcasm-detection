@@ -90,7 +90,7 @@ def parse_option():
 
 def set_loader(opt):
     # construct data loader
-    train_dataset = RG2Dataset(os.path.join(opt.data_path, 'train_id.pkl'),opt.image_path, opt.max_len)
+    train_dataset = RGDataset(os.path.join(opt.data_path, 'train_id.pkl'),opt.image_path, opt.max_len)
     test_dataset = RG2Dataset(os.path.join(opt.data_path, 'test_id.pkl'),opt.image_path, opt.max_len)
     ood_dataset = RG2Dataset(os.path.join(opt.data_path, 'data_label0_2.pkl'),opt.image_path, opt.max_len)
     train_loader = DataLoader(train_dataset, batch_size=opt.batch_size, shuffle=True,
